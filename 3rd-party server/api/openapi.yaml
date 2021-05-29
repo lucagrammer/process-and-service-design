@@ -1,0 +1,242 @@
+openapi: 3.0.0
+info:
+  title: Jewelly's third party APIs
+  description: "APIs for requesting and managing **deliveries**,**raw material** orders\
+    \ and **payments**. Details on the interfaces of the services offered by Jewelly's\
+    \ partners are provided below. In particular: **delivery third party, supplier\
+    \ third party, payments third party**."
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: http://localhost:9090/
+  description: Local Server
+tags:
+- name: deliverly
+  description: APIs of the Jewelly's delivery third party for requesting and managing
+    **deliveries**
+- name: supplierly
+  description: APIs of the Jewelly's supplier third party for requesting and managing
+    **raw material orders**
+- name: bankly
+  description: APIs of the Jewelly's payment third party for requesting and managing
+    **payments**
+paths:
+  /deliverly/delivery:
+    post:
+      tags:
+      - deliverly
+      summary: Make a shipping request to Deliverly
+      description: This API allows to submit a request for a new delivery
+      operationId: handleDelivery
+      requestBody:
+        description: Details of the delivery to be placed
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeliveryRequest'
+        required: true
+      responses:
+        "200":
+          description: The shipment has been taken over
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Delivery'
+        "400":
+          description: "Bad request, the address is invalid or not served by Deliverly"
+      x-swagger-router-controller: Deliverly
+  /deliverly/delivery/{id}:
+    get:
+      tags:
+      - deliverly
+      summary: Get details of an existing shipping request
+      description: This API allows to get details about a delivery
+      operationId: getDeliveryDetails
+      parameters:
+      - name: id
+        in: path
+        description: Delivery identifier
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Delivery details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Delivery'
+        "404":
+          description: Delivery not found
+      x-swagger-router-controller: Deliverly
+  /supplierly/catalogue:
+    get:
+      tags:
+      - supplierly
+      summary: Get the catalogue of the available raw materials
+      description: This API allows to get the catalogue of the available raw materials
+      operationId: getCatalogue
+      responses:
+        "200":
+          description: Delivery details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Catalogue'
+      x-swagger-router-controller: Supplierly
+  /supplierly/order:
+    post:
+      tags:
+      - supplierly
+      summary: Place a raw material order to Supplierly
+      description: This API allows to submit a raw material order
+      operationId: orderMaterials
+      requestBody:
+        description: Details of the order to be placed
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderRequest'
+        required: true
+      responses:
+        "200":
+          description: Order details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        "400":
+          description: "Bad request, required materials do not exist or invalid order"
+      x-swagger-router-controller: Supplierly
+  /bankly/payment:
+    post:
+      tags:
+      - bankly
+      summary: Emit a payment
+      description: This API allows to emit a payment
+      operationId: emitPayment
+      requestBody:
+        description: Details of the payment to be placed
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentRequest'
+        required: true
+      responses:
+        "200":
+          description: Payment successfully processed
+        "400":
+          description: Insufficient credit to execute the transaction
+        "404":
+          description: Invalid IBAN
+      x-swagger-router-controller: Bankly
+components:
+  schemas:
+    DeliveryRequest:
+      properties:
+        recipient:
+          type: string
+        address:
+          type: string
+      example:
+        address: "Via Pola, 12 - Milano (MI) 22060"
+        recipient: Mario Rossi
+    Delivery:
+      properties:
+        id:
+          type: integer
+        status:
+          type: string
+          enum:
+          - processing
+          - on delivery
+          - delivered
+          - lost
+        recipient:
+          type: string
+        address:
+          type: string
+        cost:
+          type: number
+      example:
+        address: "Via Pola, 12 - Milano (MI) 22060"
+        cost: 6
+        recipient: Mario Rossi
+        id: 0
+        status: processing
+    Catalogue:
+      properties:
+        materials:
+          type: array
+          items:
+            $ref: '#/components/schemas/Catalogue_materials'
+      example:
+        materials:
+        - id: 1
+          name: Gold thread
+          price: 100.5
+          availability: 2
+    OrderRequest:
+      properties:
+        materials:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderRequest_materials'
+      example:
+        materials:
+        - id: 1
+          quantity: 4
+        - id: 2
+          quantity: 5
+    Order:
+      properties:
+        deliveryDate:
+          type: string
+        cost:
+          type: number
+        iban:
+          type: string
+        materials:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderRequest_materials'
+      example:
+        deliveryDate: 10/12/2022
+        cost: 1050.5
+        iban: IT60-X054-2811-1010-0000-0123-456
+        materials:
+        - id: 1
+          quantity: 4
+        - id: 2
+          quantity: 5
+    PaymentRequest:
+      properties:
+        iban:
+          type: string
+        amount:
+          type: number
+      example:
+        iban: IT60-X054-2811-1010-0000-0123-456
+        amount: 1050.5
+    Catalogue_materials:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        price:
+          type: number
+        availability:
+          type: integer
+    OrderRequest_materials:
+      type: object
+      properties:
+        id:
+          type: integer
+        quantity:
+          type: integer

@@ -10,7 +10,7 @@ This part of the project consists in the design of the the archimate model (both
 
 ## **Business Process Choreography and Soundness**
 
-This part of the project consists in the design of the the business process orchestration and in the verification of the soundness property for a portion of it.
+This part of the project consists in the design of the the business process choreography and in the verification of the soundness property for a portion of it.
 > The file of the final **Business Process Choreography** can be found in the [Choreography Delivery Folder](https://github.com/lucagrammer/Plug-IT/tree/master/Choreography/Deliverable).
 
 ## **Business Process Orchestration**

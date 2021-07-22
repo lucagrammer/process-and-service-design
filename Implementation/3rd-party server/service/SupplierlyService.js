@@ -11,19 +11,19 @@ exports.getCatalogue = function () {
     var catalogue = {
       materials: [
         {
-          id: 1,
+          id: 0,
           name: "Gold thread",
           price: 100,
           availability: 20,
         },
         {
-          id: 2,
+          id: 1,
           name: "Silver thread",
           price: 90,
           availability: 23,
         },
         {
-          id: 3,
+          id: 2,
           name: "Gemstone",
           price: 60,
           availability: 10,
@@ -43,9 +43,14 @@ exports.getCatalogue = function () {
  **/
 exports.orderMaterials = function ({ materials }) {
   return new Promise(function (resolve, reject) {
+    var computedPrice = 0;
+    const priceList = [100, 90, 60];
+    materials.forEach((element) => {
+      computedPrice += priceList[element.id] * element.quantity;
+    });
     var order = {
       deliveryDate: "10/12/2022",
-      cost: 1050,
+      cost: computedPrice,
       iban: "IT60-X054-2811-1010-0000-0123-456",
       materials: materials,
     };

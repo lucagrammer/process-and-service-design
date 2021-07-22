@@ -82,7 +82,7 @@ paths:
       operationId: getCatalogue
       responses:
         "200":
-          description: Delivery details
+          description: Catalogue
           content:
             application/json:
               schema:

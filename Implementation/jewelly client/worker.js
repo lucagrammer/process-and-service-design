@@ -66,7 +66,7 @@ client.subscribe("get-catalogue", async function ({ task, taskService }) {
       data.materials.forEach((element, index) => {
         processVariables.set(
           `productCatalogue${index}`,
-          `Id: ${element.id}, Name: ${element.name}, Unitary price: ${element.price}€`
+          `Id: ${element.id}, Name: ${element.name}, Unitary price: ${element.price}€, Availability: ${element.availability}`
         );
       });
 

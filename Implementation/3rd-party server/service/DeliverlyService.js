@@ -40,7 +40,6 @@ exports.getDeliveryDetails = function (id) {
       },
     ];
     if (id >= 0 && id <= 3) {
-      console.log("I found");
       resolve(deliveries[id]);
     } else {
       resolve({

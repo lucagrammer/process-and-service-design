@@ -49,4 +49,5 @@ To run the process follow these steps:
 - Sivlia Locarno ([@silvialocarno](https://github.com/silvialocarno))
 - Luca Minotti ([@lucagrammer](https://github.com/lucagrammer))
 
+#### Final score: 24/24
 
